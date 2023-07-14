@@ -1,9 +1,6 @@
-// 数据模型（规范数据格式）
+const mongoose = require('mongoose')
 
-const mongoose = require('./db')
-
-// 定义Schema（数据规范）
-const UserSchema = mongoose.Schema({
+const UserSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true, // 必需
@@ -20,7 +17,7 @@ const UserSchema = mongoose.Schema({
     timestamps: true // 时间戳
 })
 
-const User = mongoose.model('user',UserSchema)
+const User = mongoose.model('users', UserSchema)
 
 module.exports = {
     User

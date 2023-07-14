@@ -5,13 +5,20 @@ const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
+const cors = require('koa2-cors')
+
+const mongoose = require('./db')
 
 const index = require('./routes/index')
-const users = require('./routes/users')
-const comments = require('./routes/comments')
+const user = require('./routes/user')
+
+mongoose()
 
 // error handler
 onerror(app)
+
+// 允许跨域
+app.use(cors())
 
 // middlewares 中间件
 app.use(bodyparser({ // request body 转换
@@ -33,22 +40,11 @@ app.use(async (ctx, next) => {
   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
 })
 
-// 模拟登录
-// app.use(async (ctx, next) => {
-//   const query = ctx.query
-//   if (query.username == 'peng') {
-//     await next() // 执行下一个中间件
-//   } else {
-//     // 登录失败
-//     ctx.body = '登录失败'
-//   }
-// })
 
 // routes 注册路由
-app.use(index.routes(), index.allowedMethods())
-app.use(users.routes(), users.allowedMethods())
-app.use(comments.routes(), comments.allowedMethods())
 // allowedMethods 对404或者返回是空的情况的一种补充
+app.use(index.routes(), index.allowedMethods())
+app.use(user.routes(), user.allowedMethods())
 
 // error-handling
 app.on('error', (err, ctx) => {
